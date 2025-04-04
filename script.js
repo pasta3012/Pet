@@ -10,7 +10,7 @@ let pet = {
 };
 
 let player = {
-    name: "Huy",
+    name: "Hiếch",
     balance: 1000
 };
 
@@ -18,7 +18,7 @@ let gameTime = {
     hours: 12,
     minutes: 0,
     day: 1,
-    speed: 1 // 1 = 1 phút thật = 1 phút game
+    speed: 1
 };
 
 const foods = {
@@ -41,17 +41,13 @@ function updateGameTime() {
         }
     }
     
-    // Cập nhật giao diện
     const ampm = gameTime.hours >= 12 ? "PM" : "AM";
     const displayHours = gameTime.hours % 12 || 12;
     document.getElementById("game-time").textContent = 
         `${displayHours}:${gameTime.minutes.toString().padStart(2, '0')} ${ampm}`;
     document.getElementById("game-date").textContent = `Ngày ${gameTime.day}`;
     
-    // Kiểm tra chế độ ban đêm
     checkNightMode();
-    
-    // Tự động gọi lại sau 1 phút thật
     setTimeout(updateGameTime, 60000 / gameTime.speed);
 }
 
@@ -60,12 +56,10 @@ function checkNightMode() {
     const isNight = gameTime.hours >= 22 || gameTime.hours < 6;
     
     if (isNight) {
-        document.body.classList.add("night-mode");
         if (!pet.isSleeping && Math.random() > 0.3) {
             putPetToSleep();
         }
     } else {
-        document.body.classList.remove("night-mode");
         if (pet.isSleeping && gameTime.hours === 8) {
             wakePetUp();
         }
@@ -112,13 +106,11 @@ function updateStats() {
     document.getElementById("player-name").textContent = player.name;
     document.getElementById("balance").textContent = player.balance.toLocaleString();
     
-    // Cập nhật trạng thái nút thức ăn
     document.querySelectorAll(".food-options button").forEach(btn => {
         const foodType = btn.getAttribute("onclick").split("'")[1];
         btn.disabled = player.balance < foods[foodType].price || pet.isEating || pet.isSleeping;
     });
     
-    // Cập nhật nút ngủ
     document.getElementById("sleep-button").disabled = pet.isEating;
 }
 
@@ -132,7 +124,6 @@ function interactWithPet() {
     
     updatePetStatus();
     
-    // Hiệu ứng khi chạm
     const petImage = document.getElementById("pet-image");
     petImage.style.transform = "scale(1.1)";
     setTimeout(() => {
@@ -193,7 +184,6 @@ function updatePetStatus() {
 // Hệ thống tự động giảm các chỉ số theo thời gian
 setInterval(() => {
     if (pet.isSleeping) {
-        // Phục hồi nhanh hơn khi ngủ
         pet.energy = Math.min(100, pet.energy + 3);
     } else {
         pet.happiness = Math.max(0, pet.happiness - 0.8);
@@ -204,6 +194,47 @@ setInterval(() => {
     updatePetStatus();
     updateStats();
 }, 30000);
+
+// Dark Mode Toggle
+const darkModeToggle = document.getElementById('dark-mode-toggle');
+const darkModeIcon = darkModeToggle.querySelector('i');
+
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+const savedMode = localStorage.getItem('darkMode');
+
+if (savedMode === 'enabled' || (!savedMode && prefersDark)) {
+    enableDarkMode();
+}
+
+darkModeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    
+    if (document.body.classList.contains('dark-mode')) {
+        enableDarkMode();
+    } else {
+        disableDarkMode();
+    }
+});
+
+function enableDarkMode() {
+    document.body.classList.add('dark-mode');
+    darkModeIcon.classList.replace('fa-moon', 'fa-sun');
+    localStorage.setItem('darkMode', 'enabled');
+}
+
+function disableDarkMode() {
+    document.body.classList.remove('dark-mode');
+    darkModeIcon.classList.replace('fa-sun', 'fa-moon');
+    localStorage.setItem('darkMode', 'disabled');
+}
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    if (e.matches) {
+        enableDarkMode();
+    } else {
+        disableDarkMode();
+    }
+});
 
 // Khởi chạy ban đầu
 updateStats();

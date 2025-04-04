@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thú Cưng Ảo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Thú Cưng Ảo</h1>
+        <p class="subtitle">Chạm vào thú cưng để tương tác!</p>
+        
+        <div class="pet-area">
+            <img id="pet-image" src="pet-default.png" alt="Thú cưng" onclick="interactWithPet()">
+        </div>
+        
+        <div class="stats">
+            <h2>Thông tin thú cưng</h2>
+            <ul>
+                <li><strong>Tên:</strong> <span id="pet-name">Miu Miu</span></li>
+                <li><strong>Độ đối:</strong> <span id="affection">50</span>%</li>
+                <li><strong>Hạnh phúc:</strong> <span id="happiness">50</span>%</li>
+                <li><strong>Năng lượng:</strong> <span id="energy">50</span>%</li>
+                <li><strong>Trạng thái:</strong> <span id="status">Đang thức</span></li>
+            </ul>
+            
+            <h2>Thông tin người chơi</h2>
+            <ul>
+                <li><strong>Tên:</strong> <span id="player-name">Hiếch</span></li>
+                <li><strong>Số dư:</strong> <span id="balance">1.000</span> ₽</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

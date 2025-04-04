@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     background-color: #f5f5f5;
     margin: 0;
     padding: 20px;
@@ -18,24 +18,29 @@ body {
 h1 {
     color: #ff6b6b;
     text-align: center;
+    margin-bottom: 5px;
 }
 
 .subtitle {
     text-align: center;
     font-style: italic;
     color: #666;
+    margin-top: 0;
 }
 
 .pet-area {
     text-align: center;
     margin: 20px 0;
+    padding: 15px;
+    background-color: #fff9f9;
+    border-radius: 10px;
 }
 
 #pet-image {
     width: 200px;
     height: 200px;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: all 0.3s;
 }
 
 #pet-image:hover {
@@ -44,6 +49,9 @@ h1 {
 
 .stats {
     margin-top: 20px;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
 }
 
 .stats ul {
@@ -53,8 +61,71 @@ h1 {
 
 .stats li {
     margin-bottom: 10px;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.stats li:last-child {
+    border-bottom: none;
 }
 
 .stats strong {
     color: #ff6b6b;
+    display: inline-block;
+    width: 100px;
+}
+
+.actions {
+    margin-top: 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.food-options {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+button {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background-color: #ff5252;
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#food-display {
+    margin-top: 10px;
+    font-size: 50px;
+    height: 60px;
+    transition: all 0.5s;
+}
+
+/* Hiệu ứng khi thú cưng ăn */
+.eating {
+    animation: eatAnimation 0.5s infinite alternate;
+}
+
+@keyframes eatAnimation {
+    from { transform: rotate(-5deg); }
+    to { transform: rotate(5deg); }
 }

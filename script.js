@@ -1,7 +1,7 @@
 // Khởi tạo thông số ban đầu
 let pet = {
     name: "Miu Miu",
-    affection: 50,
+    closeness: 50,
     happiness: 50,
     energy: 50,
     status: "Đang thức",
@@ -44,7 +44,7 @@ function interactWithPet() {
     
     // Tăng độ hạnh phúc và độ đối
     pet.happiness = Math.min(100, pet.happiness + 5);
-    pet.affection = Math.min(100, pet.affection + 3);
+    pet.closeness = Math.min(100, pet.closeness + 3);
     
     // Giảm năng lượng
     pet.energy = Math.max(0, pet.energy - 2);
@@ -124,7 +124,7 @@ function updatePetStatus() {
 // Hệ thống tự động giảm các chỉ số theo thời gian
 setInterval(() => {
     pet.happiness = Math.max(0, pet.happiness - 1);
-    pet.affection = Math.max(0, pet.affection - 0.5);
+    pet.affection = Math.max(0, pet.closeness - 0.5);
     
     if (pet.status.includes("ngủ")) {
         pet.energy = Math.min(100, pet.energy + 5);

@@ -1,3 +1,4 @@
+/* Giữ nguyên như cũ, không cần thay đổi */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f5f5f5;
@@ -120,7 +121,6 @@ button:disabled {
     transition: all 0.5s;
 }
 
-/* Hiệu ứng khi thú cưng ăn */
 .eating {
     animation: eatAnimation 0.5s infinite alternate;
 }

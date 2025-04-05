@@ -8,56 +8,118 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <button id="dark-mode-toggle" class="dark-mode-btn">
-        <i class="fas fa-moon"></i>
-    </button>
-    
-    <div class="container">
-        <h1>Thú Cưng Ảo</h1>
-        <p class="subtitle">Chạm vào thú cưng để tương tác!</p>
-        
-        <div class="pet-area">
-            <img id="pet-image" src="pet-default.png" alt="Thú cưng" onclick="interactWithPet()">
-        </div>
-        
-        <div class="time-display">
-            <h3>Thời gian trong game</h3>
-            <p id="game-time">12:00 PM</p>
-            <p id="game-date">Ngày 1</p>
-        </div>
-        
-        <div class="stats">
-            <h2>Thông tin thú cưng</h2>
-            <ul>
-                <li><strong>Tên:</strong> <span id="pet-name">Miu Miu</span></li>
-                <li><strong>Độ thân thiết:</strong> <span id="affection">50</span>%</li>
-                <li><strong>Hạnh phúc:</strong> <span id="happiness">50</span>%</li>
-                <li><strong>Năng lượng:</strong> <span id="energy">50</span>%</li>
-                <li><strong>Trạng thái:</strong> <span id="status">Đang thức</span></li>
-            </ul>
-            
-            <h2>Thông tin người chơi</h2>
-            <ul>
-                <li><strong>Tên:</strong> <span id="player-name">Hiếch</span></li>
-                <li><strong>Số dư:</strong> <span id="balance">1.000</span> ₽</li>
-            </ul>
-        </div>
-        
-        <div class="actions">
-            <h2>Hành động</h2>
-            <div class="food-options">
-                <button onclick="feedPet('fish')">Cá (10₽)</button>
-                <button onclick="feedPet('meat')">Thịt (15₽)</button>
-                <button onclick="feedPet('vegetable')">Rau (5₽)</button>
+    <div class="desktop-layout">
+        <div class="header">
+            <h1><i class="fas fa-paw"></i> Thú Cưng Ảo</h1>
+            <div class="controls">
+                <button id="dark-mode-toggle" class="control-btn" title="Chế độ tối">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="https://github.com/pasta3012/Pet" class="github-btn" title="Xem mã nguồn" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-github"></i>
+                    <span>@pasta3012</span>
+                </a>
             </div>
-            <button onclick="toggleSleep()" id="sleep-button">
-                <span id="sleep-text">Cho ngủ</span>
-            </button>
-            <div id="food-display"></div>
         </div>
+
+        <div class="main-content">
+            <div class="pet-section">
+                <div class="pet-container">
+                    <img id="pet-image" src="pet-default.png" alt="Thú cưng">
+                    <div class="pet-mood" id="pet-mood">😊</div>
+                </div>
+                <div class="pet-interactions">
+                    <button onclick="interactWithPet()" class="action-btn">
+                        <i class="fas fa-hand-pointer"></i> Vuốt ve
+                    </button>
+                    <button onclick="toggleSleep()" class="action-btn" id="sleep-btn">
+                        <i class="fas fa-bed"></i> Cho ngủ
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-panel">
+                <div class="stats-section">
+                    <h2><i class="fas fa-info-circle"></i> Thông tin thú cưng</h2>
+                    <div class="stat-bars">
+                        <div class="stat-item">
+                            <label>Độ thân thiết:</label>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="affection-bar" style="width: 50%"></div>
+                                <span class="progress-text" id="affection-text">50%</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <label>Hạnh phúc:</label>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="happiness-bar" style="width: 50%"></div>
+                                <span class="progress-text" id="happiness-text">50%</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <label>Năng lượng:</label>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="energy-bar" style="width: 50%"></div>
+                                <span class="progress-text" id="energy-text">50%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="status-info">
+                        <p><strong>Tên:</strong> <span id="pet-name">Miu Miu</span></p>
+                        <p><strong>Trạng thái:</strong> <span id="pet-status">Đang thức</span></p>
+                    </div>
+                </div>
+
+                <div class="player-section">
+                    <h2><i class="fas fa-user"></i> Người chơi</h2>
+                    <div class="player-info">
+                        <p><strong>Tên:</strong> <span id="player-name">Hiếch</span></p>
+                        <p><strong>Số dư:</strong> <span id="balance">1,000</span> ₽</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-panel">
+                <div class="shop-section">
+                    <h2><i class="fas fa-shopping-cart"></i> Cửa hàng</h2>
+                    <div class="shop-items">
+                        <div class="shop-item" data-food="fish">
+                            <div class="item-icon">🐟</div>
+                            <div class="item-info">
+                                <h3>Cá</h3>
+                                <p>+15 Năng lượng</p>
+                                <p>+5 Hạnh phúc</p>
+                                <p class="item-price">10 ₽</p>
+                            </div>
+                        </div>
+                        <div class="shop-item" data-food="meat">
+                            <div class="item-icon">🍖</div>
+                            <div class="item-info">
+                                <h3>Thịt</h3>
+                                <p>+20 Năng lượng</p>
+                                <p>+7 Hạnh phúc</p>
+                                <p class="item-price">15 ₽</p>
+                            </div>
+                        </div>
+                        <div class="shop-item" data-food="vegetable">
+                            <div class="item-icon">🥕</div>
+                            <div class="item-info">
+                                <h3>Rau</h3>
+                                <p>+10 Năng lượng</p>
+                                <p>+3 Hạnh phúc</p>
+                                <p class="item-price">5 ₽</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feeding-animation" id="feeding-animation"></div>
+            </div>
+        </div>
+
+        <div id="notification-area"></div>
     </div>
 
-    <div id="sleep-effect" class="sleeping-effect"></div>
     <script src="script.js"></script>
 </body>
 </html>

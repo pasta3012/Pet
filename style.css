@@ -1,175 +1,356 @@
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f5f5f5;
+* {
     margin: 0;
-    padding: 20px;
-    color: #333;
-    transition: background-color 0.5s ease, color 0.5s ease;
-}
-
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    transition: all 0.5s ease;
-}
-
-h1 {
-    color: #ff6b6b;
-    text-align: center;
-    margin-bottom: 5px;
-}
-
-.subtitle {
-    text-align: center;
-    font-style: italic;
-    color: #666;
-    margin-top: 0;
-}
-
-.pet-area {
-    text-align: center;
-    margin: 20px 0;
-    padding: 15px;
-    background-color: #fff9f9;
-    border-radius: 10px;
-    transition: all 0.5s ease;
-}
-
-#pet-image {
-    width: 200px;
-    height: 200px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-#pet-image:hover {
-    transform: scale(1.05);
-}
-
-.stats {
-    margin-top: 20px;
-    background-color: #f9f9f9;
-    padding: 15px;
-    border-radius: 10px;
-    transition: all 0.5s ease;
-}
-
-.stats ul {
-    list-style-type: none;
     padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.stats li {
-    margin-bottom: 10px;
-    padding: 5px 0;
-    border-bottom: 1px solid #eee;
-    transition: border-color 0.5s ease;
+body {
+    background-color: #f5f5f5;
+    color: #333;
+    transition: all 0.3s ease;
 }
 
-.stats li:last-child {
-    border-bottom: none;
+.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
 }
 
-.stats strong {
-    color: #ff6b6b;
-    display: inline-block;
-    width: 100px;
-}
-
-.actions {
-    margin-top: 20px;
-    text-align: center;
-    background-color: #f9f9f9;
-    padding: 15px;
-    border-radius: 10px;
-    transition: all 0.5s ease;
-}
-
-.food-options {
+.desktop-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 2px solid #ff6b6b;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    color: #ff6b6b;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
     gap: 10px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
 }
 
-button {
-    background-color: #ff6b6b;
-    color: white;
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.control-btn {
+    background: none;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    font-size: 20px;
+    color: #666;
     cursor: pointer;
-    font-size: 16px;
-    transition: all 0.3s;
+    transition: all 0.2s;
+    padding: 5px;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-button:hover {
-    background-color: #ff5252;
+.dark-mode .control-btn {
+    color: #bb86fc;
+}
+
+.github-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.github-btn:hover {
+    background-color: #e0e0e0;
     transform: translateY(-2px);
 }
 
-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-    transform: none;
+.github-btn i {
+    font-size: 18px;
 }
 
-#sleep-button {
-    background-color: #4b6cb7;
-    margin-top: 10px;
+.dark-mode .github-btn {
+    background-color: #333;
+    color: #f0f0f0;
 }
 
-#sleep-button:hover {
-    background-color: #3a56a0;
+.dark-mode .github-btn:hover {
+    background-color: #444;
 }
 
-#food-display {
-    margin-top: 10px;
-    font-size: 50px;
-    height: 60px;
-    transition: all 0.5s;
+/* Giữ nguyên tất cả CSS cũ khác... */
+
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+    flex-grow: 1;
 }
 
-.time-display {
+.pet-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pet-container {
+    position: relative;
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     text-align: center;
-    margin: 15px 0;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    transition: all 0.5s ease;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.sleeping {
-    filter: brightness(0.7);
-    opacity: 0.8;
-    animation: sleepAnimation 2s infinite alternate;
+.dark-mode .pet-container {
+    background-color: #1e1e1e;
 }
 
-@keyframes sleepAnimation {
-    0% { transform: scale(0.98); }
-    100% { transform: scale(1.02); }
+#pet-image {
+    max-width: 100%;
+    max-height: 300px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 10px;
 }
 
-.sleeping-effect {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+.pet-mood {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+}
+
+.pet-interactions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #4b6cb7;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.dark-mode .action-btn {
+    background-color: #bb86fc;
+    color: #000;
+}
+
+.action-btn i {
+    font-size: 16px;
+}
+
+.stats-panel {
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 20px;
+}
+
+.stats-section, .player-section {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.dark-mode .stats-section,
+.dark-mode .player-section {
+    background-color: #1e1e1e;
+}
+
+.stat-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    height: 20px;
+    background-color: #eee;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.dark-mode .progress-bar {
+    background-color: #333;
+}
+
+.progress-fill {
     height: 100%;
-    background: radial-gradient(circle, transparent 10%, rgba(0,0,0,0.7) 100%);
-    pointer-events: none;
-    z-index: 10;
-    opacity: 0;
-    transition: opacity 1s;
+    border-radius: 10px;
+    transition: width 0.5s ease;
 }
 
-.show-sleep {
-    opacity: 1;
+#affection-bar {
+    background-color: #ff6b6b;
+}
+
+#happiness-bar {
+    background-color: #4b6cb7;
+}
+
+#energy-bar {
+    background-color: #4caf50;
+}
+
+.progress-text {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+}
+
+.dark-mode .progress-text {
+    color: #fff;
+}
+
+.shop-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.shop-item {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.dark-mode .shop-item {
+    background-color: #2d2d2d;
+}
+
+.shop-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.shop-item.active {
+    transform: scale(0.95);
+    border-color: #ff6b6b;
+}
+
+.item-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.item-info h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #ff6b6b;
+}
+
+.item-info p {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 3px;
+}
+
+.dark-mode .item-info p {
+    color: #aaa;
+}
+
+.item-price {
+    font-weight: bold;
+    color: #4caf50;
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+#notification-area {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+}
+
+.notification {
+    padding: 15px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    max-width: 300px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.notification.error {
+    background-color: #f44336;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.feeding-animation {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.feeding-effect {
+    animation: feeding 1s forwards;
+}
+
+@keyframes feeding {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(0.8); opacity: 0; }
 }
 
 .eating {
@@ -181,72 +362,12 @@ button:disabled {
     to { transform: rotate(5deg); }
 }
 
-/* Dark Mode Styles */
-body.dark-mode {
-    background-color: #121212;
-    color: #e0e0e0;
+.sleeping {
+    filter: brightness(0.7);
+    animation: sleepAnimation 2s infinite alternate;
 }
 
-.dark-mode .container {
-    background-color: #1e1e1e;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-}
-
-.dark-mode .pet-area,
-.dark-mode .stats,
-.dark-mode .actions,
-.dark-mode .time-display {
-    background-color: #2d2d2d;
-}
-
-.dark-mode .stats li {
-    border-bottom-color: #444;
-}
-
-.dark-mode button {
-    background-color: #bb86fc;
-    color: #000;
-}
-
-.dark-mode button:hover {
-    background-color: #9a67ea;
-}
-
-.dark-mode .food-options button {
-    background-color: #03dac6;
-    color: #000;
-}
-
-.dark-mode .food-options button:hover {
-    background-color: #018786;
-}
-
-.dark-mode #sleep-button {
-    background-color: #3700b3;
-}
-
-.dark-mode #sleep-button:hover {
-    background-color: #6200ee;
-}
-
-.dark-mode .dark-mode-btn {
-    color: #bb86fc;
-}
-
-/* Dark Mode Toggle Button */
-.dark-mode-btn {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: transparent;
-    border: none;
-    font-size: 24px;
-    color: #333;
-    cursor: pointer;
-    z-index: 100;
-    transition: all 0.3s;
-}
-
-.dark-mode-btn:hover {
-    transform: scale(1.1);
+@keyframes sleepAnimation {
+    0% { transform: scale(0.98); }
+    100% { transform: scale(1.02); }
 }

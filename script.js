@@ -1,241 +1,308 @@
-// Khởi tạo thông số ban đầu
-let pet = {
-    name: "Miu Miu",
-    affection: 50,
-    happiness: 50,
-    energy: 50,
-    status: "Đang thức",
-    isEating: false,
-    isSleeping: false
+// Khởi tạo game state
+const gameState = {
+    pet: {
+        name: "Miu Miu",
+        affection: 50,
+        happiness: 50,
+        energy: 50,
+        status: "Đang thức",
+        isSleeping: false,
+        isEating: false
+    },
+    player: {
+        name: "Hiếch",
+        balance: 1000
+    },
+    darkMode: false
 };
 
-let player = {
-    name: "Hiếch",
-    balance: 1000
-};
-
-let gameTime = {
-    hours: 12,
-    minutes: 0,
-    day: 1,
-    speed: 1
-};
-
+// Định nghĩa các loại thức ăn
 const foods = {
-    fish: { emoji: "🐟", price: 10, energy: 15, happiness: 5 },
-    meat: { emoji: "🍖", price: 15, energy: 20, happiness: 7 },
-    vegetable: { emoji: "🥕", price: 5, energy: 10, happiness: 3 }
+    fish: {
+        emoji: "🐟",
+        price: 10,
+        energy: 15,
+        happiness: 5,
+        effect: function() {
+            gameState.pet.energy = Math.min(100, gameState.pet.energy + this.energy);
+            gameState.pet.happiness = Math.min(100, gameState.pet.happiness + this.happiness);
+            showNotification(`Thú cưng ăn cá 🐟 (+${this.energy} năng lượng, +${this.happiness} hạnh phúc)`);
+        }
+    },
+    meat: {
+        emoji: "🍖",
+        price: 15,
+        energy: 20,
+        happiness: 7,
+        effect: function() {
+            gameState.pet.energy = Math.min(100, gameState.pet.energy + this.energy);
+            gameState.pet.happiness = Math.min(100, gameState.pet.happiness + this.happiness);
+            showNotification(`Thú cưng ăn thịt 🍖 (+${this.energy} năng lượng, +${this.happiness} hạnh phúc)`);
+        }
+    },
+    vegetable: {
+        emoji: "🥕",
+        price: 5,
+        energy: 10,
+        happiness: 3,
+        effect: function() {
+            gameState.pet.energy = Math.min(100, gameState.pet.energy + this.energy);
+            gameState.pet.happiness = Math.min(100, gameState.pet.happiness + this.happiness);
+            showNotification(`Thú cưng ăn rau 🥕 (+${this.energy} năng lượng, +${this.happiness} hạnh phúc)`);
+        }
+    }
 };
 
-// Hàm cập nhật thời gian game
-function updateGameTime() {
-    gameTime.minutes += gameTime.speed;
-    
-    if (gameTime.minutes >= 60) {
-        gameTime.minutes = 0;
-        gameTime.hours++;
-        
-        if (gameTime.hours >= 24) {
-            gameTime.hours = 0;
-            gameTime.day++;
-        }
-    }
-    
-    const ampm = gameTime.hours >= 12 ? "PM" : "AM";
-    const displayHours = gameTime.hours % 12 || 12;
-    document.getElementById("game-time").textContent = 
-        `${displayHours}:${gameTime.minutes.toString().padStart(2, '0')} ${ampm}`;
-    document.getElementById("game-date").textContent = `Ngày ${gameTime.day}`;
-    
-    checkNightMode();
-    setTimeout(updateGameTime, 60000 / gameTime.speed);
+// Khởi tạo game
+function initGame() {
+    loadFromLocalStorage();
+    setupEventListeners();
+    setupFoodItems();
+    updateUI();
+    startGameLoop();
 }
 
-// Kiểm tra chế độ ban đêm
-function checkNightMode() {
-    const isNight = gameTime.hours >= 22 || gameTime.hours < 6;
+// Load từ localStorage
+function loadFromLocalStorage() {
+    const savedGame = localStorage.getItem('petGame');
+    if (savedGame) {
+        const parsed = JSON.parse(savedGame);
+        Object.assign(gameState, parsed);
+    }
     
-    if (isNight) {
-        if (!pet.isSleeping && Math.random() > 0.3) {
-            putPetToSleep();
-        }
-    } else {
-        if (pet.isSleeping && gameTime.hours === 8) {
-            wakePetUp();
-        }
+    if (gameState.darkMode) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('dark-mode-toggle').innerHTML = '<i class="fas fa-sun"></i>';
     }
 }
 
-// Cho thú cưng ngủ
-function putPetToSleep() {
-    pet.isSleeping = true;
-    pet.status = "Đang ngủ";
-    document.getElementById("pet-image").classList.add("sleeping");
-    document.getElementById("sleep-effect").classList.add("show-sleep");
-    document.getElementById("sleep-text").textContent = "Đánh thức";
-    updateStats();
+// Lưu game
+function saveGame() {
+    localStorage.setItem('petGame', JSON.stringify(gameState));
 }
 
-// Đánh thức thú cưng
-function wakePetUp() {
-    pet.isSleeping = false;
-    pet.status = "Đang thức";
-    document.getElementById("pet-image").classList.remove("sleeping");
-    document.getElementById("sleep-effect").classList.remove("show-sleep");
-    document.getElementById("sleep-text").textContent = "Cho ngủ";
-    updateStats();
-}
-
-// Toggle trạng thái ngủ
-function toggleSleep() {
-    if (pet.isSleeping) {
-        wakePetUp();
-    } else {
-        putPetToSleep();
-    }
-}
-
-// Cập nhật thông tin lên giao diện
-function updateStats() {
-    document.getElementById("pet-name").textContent = pet.name;
-    document.getElementById("affection").textContent = pet.affection;
-    document.getElementById("happiness").textContent = pet.happiness;
-    document.getElementById("energy").textContent = pet.energy;
-    document.getElementById("status").textContent = pet.status;
+// Thiết lập event listeners
+function setupEventListeners() {
+    // Dark mode toggle
+    document.getElementById('dark-mode-toggle').addEventListener('click', toggleDarkMode);
     
-    document.getElementById("player-name").textContent = player.name;
-    document.getElementById("balance").textContent = player.balance.toLocaleString();
+    // Pet interaction
+    document.getElementById('pet-image').addEventListener('click', interactWithPet);
+}
+
+// Thiết lập sự kiện cho các món ăn
+function setupFoodItems() {
+    const shopItems = document.querySelectorAll('.shop-item');
     
-    document.querySelectorAll(".food-options button").forEach(btn => {
-        const foodType = btn.getAttribute("onclick").split("'")[1];
-        btn.disabled = player.balance < foods[foodType].price || pet.isEating || pet.isSleeping;
+    shopItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const foodType = this.getAttribute('data-food');
+            feedPet(foodType);
+        });
     });
-    
-    document.getElementById("sleep-button").disabled = pet.isEating;
 }
 
-// Tương tác với thú cưng (vuốt ve)
+// Game loop
+function startGameLoop() {
+    setInterval(() => {
+        if (gameState.pet.isSleeping) {
+            gameState.pet.energy = Math.min(100, gameState.pet.energy + 3);
+        } else {
+            gameState.pet.happiness = Math.max(0, gameState.pet.happiness - 0.5);
+            gameState.pet.affection = Math.max(0, gameState.pet.affection - 0.3);
+            gameState.pet.energy = Math.max(0, gameState.pet.energy - 0.5);
+        }
+        
+        updatePetStatus();
+        updateUI();
+        saveGame();
+    }, 30000); // Mỗi 30 giây
+}
+
+// Cập nhật UI
+function updateUI() {
+    // Thanh tiến trình
+    document.getElementById('affection-bar').style.width = `${gameState.pet.affection}%`;
+    document.getElementById('happiness-bar').style.width = `${gameState.pet.happiness}%`;
+    document.getElementById('energy-bar').style.width = `${gameState.pet.energy}%`;
+    
+    // Text
+    document.getElementById('affection-text').textContent = `${gameState.pet.affection}%`;
+    document.getElementById('happiness-text').textContent = `${gameState.pet.happiness}%`;
+    document.getElementById('energy-text').textContent = `${gameState.pet.energy}%`;
+    
+    // Thông tin
+    document.getElementById('pet-name').textContent = gameState.pet.name;
+    document.getElementById('pet-status').textContent = gameState.pet.status;
+    document.getElementById('player-name').textContent = gameState.player.name;
+    document.getElementById('balance').textContent = gameState.player.balance.toLocaleString();
+    
+    // Nút ngủ
+    document.getElementById('sleep-btn').innerHTML = 
+        `<i class="fas fa-bed"></i> ${gameState.pet.isSleeping ? "Đánh thức" : "Cho ngủ"}`;
+    
+    // Cập nhật biểu tượng cảm xúc
+    updateMoodIcon();
+}
+
+// Cập nhật biểu tượng cảm xúc
+function updateMoodIcon() {
+    const moodIcon = document.getElementById('pet-mood');
+    if (gameState.pet.isSleeping) {
+        moodIcon.textContent = "😴";
+        return;
+    }
+    
+    if (gameState.pet.happiness < 30) {
+        moodIcon.textContent = "😞";
+    } else if (gameState.pet.happiness > 80) {
+        moodIcon.textContent = "😁";
+    } else {
+        moodIcon.textContent = "😊";
+    }
+}
+
+// Tương tác với thú cưng
 function interactWithPet() {
-    if (pet.isEating || pet.isSleeping) return;
+    if (gameState.pet.isSleeping || gameState.pet.isEating) return;
     
-    pet.happiness = Math.min(100, pet.happiness + 5);
-    pet.affection = Math.min(100, pet.affection + 3);
-    pet.energy = Math.max(0, pet.energy - 2);
+    gameState.pet.happiness = Math.min(100, gameState.pet.happiness + 5);
+    gameState.pet.affection = Math.min(100, gameState.pet.affection + 3);
+    gameState.pet.energy = Math.max(0, gameState.pet.energy - 2);
     
-    updatePetStatus();
-    
-    const petImage = document.getElementById("pet-image");
+    // Hiệu ứng
+    const petImage = document.getElementById('pet-image');
     petImage.style.transform = "scale(1.1)";
     setTimeout(() => {
         petImage.style.transform = "scale(1)";
     }, 200);
     
-    updateStats();
+    showNotification("Thú cưng rất thích được vuốt ve!");
+    updatePetStatus();
+    updateUI();
 }
 
 // Cho thú cưng ăn
 function feedPet(foodType) {
-    if (pet.isEating || pet.isSleeping) return;
-    
-    const food = foods[foodType];
-    if (player.balance < food.price) {
-        alert(`Không đủ tiền để mua ${foodType}!`);
+    if (gameState.pet.isSleeping) {
+        showNotification("Thú cưng đang ngủ, không thể cho ăn!", "error");
         return;
     }
     
-    player.balance -= food.price;
-    pet.isEating = true;
+    if (gameState.pet.isEating) {
+        showNotification("Thú cưng đang ăn rồi!", "error");
+        return;
+    }
     
-    const foodDisplay = document.getElementById("food-display");
-    foodDisplay.textContent = food.emoji;
+    const food = foods[foodType];
     
-    const petImage = document.getElementById("pet-image");
-    petImage.classList.add("eating");
+    if (gameState.player.balance < food.price) {
+        showNotification(`Không đủ tiền mua ${foodType}!`, "error");
+        return;
+    }
     
-    updateStats();
+    // Đánh dấu đang ăn
+    gameState.pet.isEating = true;
+    gameState.player.balance -= food.price;
     
+    // Hiệu ứng cho ăn
+    const animation = document.getElementById('feeding-animation');
+    animation.textContent = food.emoji;
+    animation.style.opacity = 1;
+    animation.classList.add('feeding-effect');
+    
+    // Hiệu ứng active cho item
+    const activeItem = document.querySelector(`.shop-item[data-food="${foodType}"]`);
+    activeItem.classList.add('active');
+    
+    // Hiệu ứng pet
+    const petImage = document.getElementById('pet-image');
+    petImage.classList.add('eating');
+    
+    // Áp dụng hiệu ứng thức ăn sau 0.5s
     setTimeout(() => {
-        pet.energy = Math.min(100, pet.energy + food.energy);
-        pet.happiness = Math.min(100, pet.happiness + food.happiness);
-        pet.isEating = false;
-        foodDisplay.textContent = "";
-        petImage.classList.remove("eating");
+        food.effect();
+    }, 500);
+    
+    // Kết thúc hiệu ứng sau 1s
+    setTimeout(() => {
+        animation.style.opacity = 0;
+        animation.classList.remove('feeding-effect');
+        activeItem.classList.remove('active');
+        petImage.classList.remove('eating');
+        gameState.pet.isEating = false;
         
         updatePetStatus();
-        updateStats();
-    }, 2000);
+        updateUI();
+        saveGame();
+    }, 1000);
+}
+
+// Cho thú cưng ngủ
+function toggleSleep() {
+    if (gameState.pet.isEating) {
+        showNotification("Đợi thú cưng ăn xong đã!", "error");
+        return;
+    }
+    
+    gameState.pet.isSleeping = !gameState.pet.isSleeping;
+    gameState.pet.status = gameState.pet.isSleeping ? "Đang ngủ" : "Đang thức";
+    
+    const petImage = document.getElementById('pet-image');
+    if (gameState.pet.isSleeping) {
+        petImage.classList.add('sleeping');
+        showNotification("Thú cưng đã đi ngủ");
+    } else {
+        petImage.classList.remove('sleeping');
+        showNotification("Thú cưng đã thức dậy");
+    }
+    
+    updateMoodIcon();
+    updateUI();
+    saveGame();
 }
 
 // Cập nhật trạng thái thú cưng
 function updatePetStatus() {
-    if (pet.isSleeping) return;
+    if (gameState.pet.isSleeping) return;
     
-    if (pet.energy < 10) {
-        pet.status = "Kiệt sức";
-    } else if (pet.energy < 30) {
-        pet.status = "Mệt mỏi";
-    } else if (pet.happiness > 80) {
-        pet.status = "Rất vui";
+    if (gameState.pet.energy < 10) {
+        gameState.pet.status = "Kiệt sức";
+    } else if (gameState.pet.energy < 30) {
+        gameState.pet.status = "Mệt mỏi";
+    } else if (gameState.pet.happiness > 80) {
+        gameState.pet.status = "Rất vui";
     } else {
-        pet.status = "Đang thức";
+        gameState.pet.status = "Đang thức";
     }
 }
 
-// Hệ thống tự động giảm các chỉ số theo thời gian
-setInterval(() => {
-    if (pet.isSleeping) {
-        pet.energy = Math.min(100, pet.energy + 3);
-    } else {
-        pet.happiness = Math.max(0, pet.happiness - 0.8);
-        pet.affection = Math.max(0, pet.affection - 0.3);
-        pet.energy = Math.max(0, pet.energy - 0.5);
-    }
+// Hiển thị thông báo
+function showNotification(message, type = "success") {
+    const notificationArea = document.getElementById('notification-area');
+    const notification = document.createElement('div');
+    notification.className = `notification ${type === "error" ? "error" : ""}`;
+    notification.textContent = message;
     
-    updatePetStatus();
-    updateStats();
-}, 30000);
-
-// Dark Mode Toggle
-const darkModeToggle = document.getElementById('dark-mode-toggle');
-const darkModeIcon = darkModeToggle.querySelector('i');
-
-const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-const savedMode = localStorage.getItem('darkMode');
-
-if (savedMode === 'enabled' || (!savedMode && prefersDark)) {
-    enableDarkMode();
+    notificationArea.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
 }
 
-darkModeToggle.addEventListener('click', () => {
+// Chế độ tối
+function toggleDarkMode() {
+    gameState.darkMode = !gameState.darkMode;
     document.body.classList.toggle('dark-mode');
     
-    if (document.body.classList.contains('dark-mode')) {
-        enableDarkMode();
-    } else {
-        disableDarkMode();
-    }
-});
-
-function enableDarkMode() {
-    document.body.classList.add('dark-mode');
-    darkModeIcon.classList.replace('fa-moon', 'fa-sun');
-    localStorage.setItem('darkMode', 'enabled');
+    const darkModeBtn = document.getElementById('dark-mode-toggle');
+    darkModeBtn.innerHTML = gameState.darkMode 
+        ? '<i class="fas fa-sun"></i>' 
+        : '<i class="fas fa-moon"></i>';
+    
+    saveGame();
 }
 
-function disableDarkMode() {
-    document.body.classList.remove('dark-mode');
-    darkModeIcon.classList.replace('fa-sun', 'fa-moon');
-    localStorage.setItem('darkMode', 'disabled');
-}
-
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-    if (e.matches) {
-        enableDarkMode();
-    } else {
-        disableDarkMode();
-    }
-});
-
-// Khởi chạy ban đầu
-updateStats();
-updateGameTime();
+// Khởi chạy game
+document.addEventListener('DOMContentLoaded', initGame);
